@@ -1,65 +1,127 @@
 import { useState } from 'react';
-import { Container, Button, Form, Row, Col, InputGroup, FormControl } from 'react-bootstrap';
+import { Container, Button } from 'react-bootstrap';
 import api from '../services/omdb-api';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
+import MovieCard from '../components/movieCard';
 
-const PageHead = styled.div`
+const Wrapper = styled.div`
+  background-color: var(--bs-gray-800);
+  color: var(--bs-gray-400);
+  height: 100%;
   width: 100%;
-  height: 10rem;
-  background-color: #e5e5e5;
-  text-align: center;
 `;
 
-const FormWrapper = styled.div`
-  width: 90%;
-  margin: 0 auto;
+const PageHead = styled.div`
+  color: var(--bs-gray-400);
+  height: auto;
+  min-height: 10rem;
+  padding: 2rem;
+  text-align: center;
+  width: 100%;
+  &>p{
+    margin: 0 auto;
+    max-width: 60%;
+  }
+`;
+
+const FormContainer = styled.div`
+  width: 100%;
+  margin: 1rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  
+  @media (max-width: 768px){
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .btn{
+    background-color: var(--bs-gray-700);
+    border-radius: 10px;border-radius: 10px;
+    border: 1px solid var(--bs-gray-700);
+    color: var(--bs-gray-200);
+    font-weight: 600;
+    height: 40px;
+    min-width: 8rem;
+  }
+`;
+
+const Input = styled.input`
+  background-color: var(--bs-gray-600);
+  border-radius: 10px;
+  border: 1px solid transparent;
+  color: var(--bs-gray-200);
+  font-size: 1rem;
+  height: 40px;
+  padding: 10px 20px;
+  transition: all 0.2s ease-in-out;
+  width: 60%;
+  
+  ::placeholder{
+    color: var(--bs-gray-500);
+  }
+  :focus-visible{
+    outline: none;
+  }
+  
+  :focus{
+    box-shadow: 2px 2px 4px 1px rgb(0 0 0 / 25%);
+  }
+
+  @media (max-width: 768px){
+    width: 95%;
+  }
 `;
 
 function Index() {
   const [movie, setMovie] = useState();
+  const [movieName, setMovieName] = useState();
 
   const handleCallApi = () => {
-    api.get('?apiKey=e8f4d82f&t=spider man').then((response) => {
-      setMovie(response.data);
-    })
+    if (movieName) {
+      api.get(`?apiKey=e8f4d82f&t=${movieName}&type=movie`).then((response) => {
+        setMovie(response.data);
+      })
+    } else {
+      toast.warn('Ops! Você precisa inserir um filme para realizar a busca!')
+    }
   }
 
   return (
-    <>
+    <Wrapper>
       <Container>
         <PageHead>
           <h2>Pesquise Filmes!</h2>
           <p>Bem vindo ao MPC (Movie Page Challenge), aqui você poderá pesquisar filmes e suas características através do seu nome!</p>
-          <Container fluid>
-            <Form>
-              <Row className="justify-content-md-center">
-                <Col xs={8}>
-                  <Form.Label htmlFor="inlineFormInput" visuallyHidden>
-                    Name
-                  </Form.Label>
-                  <Form.Control
-                    className="mb-2"
-                    id="inlineFormInput"
-                    placeholder="Movie Name"
-                  />
-                </Col>
-                <Col xs='auto'>
-                  <Button variant='dark' onClick={() => handleCallApi()} className="mb-2">
-                    Submit
-                  </Button>
-                </Col>
-                <Col xs='auto'>
-                  <Button variant='dark' onClick={() => setMovie(false)} className="mb-2">
-                    Submit
-                  </Button>
-                </Col>
-              </Row>
-            </Form>
-          </Container>
+          <FormContainer>
+            <Input type="text" placeholder="Insira o nome do filme" value={movieName} onChange={(e) => setMovieName(e.target.value)} />
+            <Button variant='dark' onClick={() => handleCallApi()} >
+              Pesquisar
+            </Button>
+            <Button variant='dark' onClick={() => {
+              setMovie(false);
+              setMovieName('');
+            }} >
+              Limpar
+            </Button>
+          </FormContainer>
         </PageHead>
-        <h2>{movie ? movie.Title : 'Olá Mundo'}</h2>
+        {movie
+        ?
+        <MovieCard
+          title={movie.Title} 
+          plot={movie.Plot}
+          poster={movie.Poster}
+          actors={movie.Actors}
+          rating={movie.imdbRating}
+          />
+        :
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        }
       </Container>
-    </>
+    </Wrapper>
   )
 }
 
