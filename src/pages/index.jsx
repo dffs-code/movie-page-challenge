@@ -96,7 +96,11 @@ function Index() {
           <h2>Pesquise Filmes!</h2>
           <p>Bem vindo ao MPC (Movie Page Challenge), aqui você poderá pesquisar filmes e suas características através do seu nome!</p>
           <FormContainer>
-            <Input type="text" placeholder="Insira o nome do filme" value={movieName} onChange={(e) => setMovieName(e.target.value)} />
+            <Input type="text" placeholder="Insira o nome do filme" value={movieName} onChange={(e) => setMovieName(e.target.value)} onKeyDown={(e)=>{
+              if (e.key === 'Enter') {
+                handleCallApi()
+              }
+            }}/>
             <Button variant='dark' onClick={() => handleCallApi()} >
               Pesquisar
             </Button>
@@ -118,7 +122,13 @@ function Index() {
           rating={movie.imdbRating}
           />
         :
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        <MovieCard
+          title="'Filme' de exemplo" 
+          plot="Insira um filme na barra de pesquisa acima e estas informações serão preenchidas. Aqui ficará a descrição do filme encontrado. A imagem atual vem do site Lorem Picsum, um gerador de imagens aleatórias."
+          poster="https://picsum.photos/200"
+          actors="ex: Johnny Depp, Helena Bonham Carter, Dwayne Johnson"
+          rating="7.4"
+          />
         }
       </Container>
     </Wrapper>

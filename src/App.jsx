@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from './components/header';
+import Footer from './components/footer';
 import Index from './pages/index';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -21,6 +22,7 @@ function App() {
         draggable
         pauseOnHover
       />
+      <Footer />
     </>
   )
 }
