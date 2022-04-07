@@ -1,16 +1,16 @@
 import React from 'react';
 import Header from './components/header';
 import Footer from './components/footer';
-import Index from './pages/index';
+import Routes from './routes';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './style.css';
+import './global.css';
 
 function App() {
   return (
     <>
       <Header />
-      <Index />
+      <Routes />
       <ToastContainer
         position="top-center"
         autoClose={3000}
