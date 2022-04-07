@@ -8,7 +8,7 @@ import MovieCard from '../components/movieCard';
 const Wrapper = styled.div`
   background-color: var(--bs-gray-800);
   color: var(--bs-gray-400);
-  height: 100%;
+  height: 92vh;
   width: 100%;
 `;
 
@@ -82,7 +82,12 @@ function Index() {
   const handleCallApi = () => {
     if (movieName) {
       api.get(`?apiKey=e8f4d82f&t=${movieName}&type=movie`).then((response) => {
-        setMovie(response.data);
+        console.log(response.data.Response);
+        if (response.data.Response === 'True') {
+          setMovie(response.data);
+        } else {
+          toast.error('Que pena! Filme não encontrado.')
+        }
       })
     } else {
       toast.warn('Ops! Você precisa inserir um filme para realizar a busca!')
@@ -96,11 +101,11 @@ function Index() {
           <h2>Pesquise Filmes!</h2>
           <p>Bem vindo ao MPC (Movie Page Challenge), aqui você poderá pesquisar filmes e suas características através do seu nome!</p>
           <FormContainer>
-            <Input type="text" placeholder="Insira o nome do filme" value={movieName} onChange={(e) => setMovieName(e.target.value)} onKeyDown={(e)=>{
+            <Input type="text" placeholder="Insira o nome do filme" value={movieName} onChange={(e) => setMovieName(e.target.value)} onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 handleCallApi()
               }
-            }}/>
+            }} />
             <Button variant='dark' onClick={() => handleCallApi()} >
               Pesquisar
             </Button>
@@ -113,21 +118,21 @@ function Index() {
           </FormContainer>
         </PageHead>
         {movie
-        ?
-        <MovieCard
-          title={movie.Title} 
-          plot={movie.Plot}
-          poster={movie.Poster}
-          actors={movie.Actors}
-          rating={movie.imdbRating}
+          ?
+          <MovieCard
+            title={movie.Title}
+            plot={movie.Plot}
+            poster={movie.Poster}
+            actors={movie.Actors}
+            rating={movie.imdbRating}
           />
-        :
-        <MovieCard
-          title="'Filme' de exemplo" 
-          plot="Insira um filme na barra de pesquisa acima e estas informações serão preenchidas. Aqui ficará a descrição do filme encontrado. A imagem atual vem do site Lorem Picsum, um gerador de imagens aleatórias."
-          poster="https://picsum.photos/200"
-          actors="ex: Johnny Depp, Helena Bonham Carter, Dwayne Johnson"
-          rating="7.4"
+          :
+          <MovieCard
+            title="'Filme' de exemplo"
+            plot="Insira um filme na barra de pesquisa acima e estas informações serão preenchidas. Aqui ficará a descrição do filme encontrado. A imagem atual vem do site Lorem Picsum, um gerador de imagens aleatórias."
+            poster="https://picsum.photos/200"
+            actors="ex: Johnny Depp, Helena Bonham Carter, Dwayne Johnson"
+            rating="7.4"
           />
         }
       </Container>
