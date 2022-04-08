@@ -5,6 +5,7 @@ import { Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import api from '../../services/omdb-api';
 import backendApi from '../../services/backend-api';
+import { TailSpin } from 'react-loader-spinner'
 
 const MovieWrapper = styled.div`
   width: 100%;
@@ -14,7 +15,7 @@ const MovieWrapper = styled.div`
   padding: 1rem 0 5rem 0;
   border-radius: 20px;
   border: 5px solid var(--bs-gray-700);
-  margin: 1rem;
+  margin: 2rem 0;
   padding: 1rem;
 
   @media (max-width: 500px){
@@ -68,8 +69,18 @@ const PosterContainer = styled.img`
   }
 `;
 
-function MovieCard({id}) {
-  const [ movie, setMovie ] = useState();
+const LoaderWrapper = styled.div`
+  margin: 10rem auto;
+  height: 10rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  font-family: var(--main-font);
+`;
+
+function MovieCard({ id }) {
+  const [movie, setMovie] = useState();
 
   useEffect(() => {
     console.log(id)
@@ -82,13 +93,13 @@ function MovieCard({id}) {
       }
     })
   }, [])
-  
+
   const handleUnfavorite = async () => {
     backendApi.delete(`/unfavorite/${id}`).then((response) => {
       console.log(response.data)
       toast.success('Filme removido com sucesso!')
       window.location.reload(false);
-    }).catch((error)=>{
+    }).catch((error) => {
       console.log(error)
       toast.error('Oops! Algo deu errado. ')
     })
@@ -96,37 +107,43 @@ function MovieCard({id}) {
 
   return (
     <>
-    {movie
-      ?
-      
-      <MovieWrapper>
-        <MovieContent>
-          <h2>{movie?.Title}</h2>
-          <p>{movie?.Plot}</p>
-          <ItemContainer>
-            <Label>Actors:</Label> {movie?.Actors}
-          </ItemContainer>
-          <ItemContainer>
-            <Label>Review:</Label>
-            <StarRatings
-              rating={parseFloat(movie?.imdbRating) / 2}
-              starRatedColor="var(--bs-gray-900)"
-              starEmptyColor="var(--bs-gray-600)"
-              numberOfStars={5}
-              name='rating'
-              starDimension="2rem"
-              starSpacing="0.2rem"
+      {movie
+        ?
+
+        <MovieWrapper>
+          <MovieContent>
+            <h2>{movie?.Title}</h2>
+            <p>{movie?.Plot}</p>
+            <ItemContainer>
+              <Label>Actors:</Label> {movie?.Actors}
+            </ItemContainer>
+            <ItemContainer>
+              <Label>Review:</Label>
+              <StarRatings
+                rating={parseFloat(movie?.imdbRating) / 2}
+                starRatedColor="var(--bs-gray-900)"
+                starEmptyColor="var(--bs-gray-600)"
+                numberOfStars={5}
+                name='rating'
+                starDimension="2rem"
+                starSpacing="0.2rem"
               />
             </ItemContainer>
             <Button variant='dark' onClick={() => id ? handleUnfavorite() : toast.warn('Pesquise um filme para favoritar')} >
-              Remover 
+              Remover
             </Button>
-        </MovieContent>
-        <PosterContainer src={movie?.Poster} alt={`${movie?.Title} poster`} />
-      </MovieWrapper>
-      :
-      ""
-    }
+          </MovieContent>
+          <PosterContainer src={movie?.Poster} alt={`${movie?.Title} poster`} />
+        </MovieWrapper>
+        :
+        <LoaderWrapper>
+          <TailSpin
+            color='var(--bs-gray-900)'
+            ariaLabel='Carregando Informações'
+          />
+          <h1>Carregando Informações</h1>
+        </LoaderWrapper>
+      }
     </>
   )
 }

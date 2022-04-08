@@ -26,8 +26,8 @@ function Header() {
             token
               ?
               <>
-                <Nav.Link href="/favorites">Favoritos</Nav.Link>
                 <Nav.Link eventKey="disabled" disabled>Olá, {user?.name.split(' ')[0]}!</Nav.Link>
+                <Nav.Link href="/favorites">Favoritos</Nav.Link>
                 <Nav.Link eventKey="disabled" onClick={() => {
                   document.cookie = `token=${token}; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`;
                   localStorage.removeItem('token');
