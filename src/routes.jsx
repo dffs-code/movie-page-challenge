@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Index from './pages/index';
 import Login from './pages/login';
 import Register from './pages/register';
-// import { useAuth } from './hooks/useAuth';
+import Favorites from './pages/favorites';
+import { useAuth } from './hooks/useAuth';
 import { toast } from 'react-toastify';
 
 const PrivateRoute = ({ children, redirectTo }) => {
@@ -29,11 +30,11 @@ export default function AllRoutes() {
             <Route path='/' element={<Index />} />
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
+            <Route path='/favorites' element={<PrivateRoute redirectTo='/login'><Favorites /></PrivateRoute>}/>
             {
               /**
                * ROTAS PRIVADAS
             <Route path='/perfil' element={<PrivateRoute redirectTo='/login'><Perfil /></PrivateRoute>}/>
-            <Route path='/favoritos' element={<PrivateRoute redirectTo='/login'><Favoritos /></PrivateRoute>}/>
                 */
             }
             {

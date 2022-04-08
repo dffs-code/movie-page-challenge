@@ -2,14 +2,32 @@ import React, { useState } from 'react';
 import { Container, Button } from 'react-bootstrap';
 import { Wrapper, FormInput, InputContainer, FormContainer } from '../components/styles/formComponents'
 import { toast } from 'react-toastify';
+import api from '../services/backend-api';
+import { useAuth } from '../hooks/useAuth';
+import { useNavigate } from "react-router-dom";
+import jwt from 'jwt-decode';
 
 export default function Login() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const { tokenSetter } = useAuth();
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
-    console.log({email, password})
-    toast.warn('Feature ainda não implementada')
+  const handleLogin = async () => {
+    
+    await api.post('/auth', {email, password}).then(async (response) => {
+      tokenSetter(response.data.token)
+      var decodedToken = jwt(response.data.token);
+      var date = new Date();
+      
+      date.setTime(date.getTime() + decodedToken.exp);
+      document.cookie = 'token =' + response.data.token + ';expires=' + date.toGMTString() + '; SameSite=Strict; Secure; ';
+      toast.success('Login com sucesso');
+      navigate('/')
+    }).catch((error)=>{
+      console.log(error)
+      toast.error('Credenciais incorretas');
+    })
   }
 
   return (

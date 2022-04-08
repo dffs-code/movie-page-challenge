@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_BASE_URL
+  baseURL: 'https://mcp-api-dffs-code.herokuapp.com'
 })
 
 api.interceptors.request.use(async (config) => {

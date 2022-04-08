@@ -2,16 +2,42 @@ import React, { useState } from 'react';
 import { Container, Button } from 'react-bootstrap';
 import { Wrapper, FormInput, InputContainer, FormContainer } from '../components/styles/formComponents'
 import { toast } from 'react-toastify';
+import api from '../services/backend-api';
+import { useAuth } from '../hooks/useAuth';
+import { useNavigate } from "react-router-dom";
+import jwt from 'jwt-decode';
 
 export default function Register() {
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
+  const { tokenSetter } = useAuth();
+  const navigate = useNavigate();
 
-  const handleRegister = () => {
-    console.log({name, email, password, confirmPassword})
-    toast.warn('Feature ainda não implementada')
+  const handleRegister = async () => {
+    if(password !== confirmPassword){
+      toast.error('As senhas precisam ser iguais')
+      return
+    } else {
+      await api.post('/user', {name, email, password}).then(async (response) => {
+        tokenSetter(response.data.token)
+        var decodedToken = jwt(response.data.token);
+        var date = new Date();
+        
+        date.setTime(date.getTime() + decodedToken.exp);
+        document.cookie = 'token =' + response.data.token + ';expires=' + date.toGMTString() + '; SameSite=Strict; Secure; ';
+        toast.success('Cadastrado com sucesso');
+        navigate('/')
+      }).catch((error)=>{
+        console.log(error)
+        if(error?.response?.status === 401){
+          toast.error('Este email já está cadastrado')
+        } else {
+          toast.error('Oops! Ocorreu um erro, tente novamente mais tarde.');
+        }
+      })
+    }
   }
 
   return (

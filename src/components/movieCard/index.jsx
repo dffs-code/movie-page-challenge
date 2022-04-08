@@ -4,6 +4,8 @@ import StarRatings from 'react-star-ratings';
 import { toast } from 'react-toastify';
 import { Button } from 'react-bootstrap';
 import { IoHeartOutline } from 'react-icons/io5'
+import api from '../../services/backend-api';
+import { useAuth } from '../../hooks/useAuth';
 
 const MovieWrapper = styled.div`
   width: 100%;
@@ -62,7 +64,19 @@ const PosterContainer = styled.img`
   }
 `;
 
-function MovieCard({title, plot, actors, rating, poster}) {
+function MovieCard({title, plot, actors, rating, poster, id}) {
+  const { user } = useAuth();
+
+  const handleFavorite = async () => {
+    api.post('/favorite',{movieId: id}).then((response) => {
+      console.log(response.data)
+      toast.success('Filme favoritado com sucesso!')
+    }).catch((error)=>{
+      console.log(error)
+      toast.error('Oops! Algo deu errado. ')
+    })
+  }
+
   return (
     <MovieWrapper>
       <MovieContent>
@@ -83,7 +97,7 @@ function MovieCard({title, plot, actors, rating, poster}) {
             starSpacing="0.2rem"
             />
           </ItemContainer>
-          <Button variant='dark' onClick={() => toast.success('favoritado')} >
+          <Button variant='dark' onClick={() => id ? handleFavorite() : toast.warn('Pesquise um filme para favoritar')} >
               Favoritar
               <IoHeartOutline /> 
             </Button>

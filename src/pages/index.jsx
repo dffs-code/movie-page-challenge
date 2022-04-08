@@ -125,6 +125,7 @@ function Index() {
             poster={movie.Poster}
             actors={movie.Actors}
             rating={movie.imdbRating}
+            id={movie.imdbID}
           />
           :
           <MovieCard
