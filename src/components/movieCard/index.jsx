@@ -64,14 +64,14 @@ const PosterContainer = styled.img`
   }
 `;
 
-function MovieCard({title, plot, actors, rating, poster, id}) {
+function MovieCard({ title, plot, actors, rating, poster, id }) {
   const { user } = useAuth();
 
   const handleFavorite = async () => {
-    api.post('/favorite',{movieId: id}).then((response) => {
+    api.post('/favorite', { movieId: id }).then((response) => {
       console.log(response.data)
       toast.success('Filme favoritado com sucesso!')
-    }).catch((error)=>{
+    }).catch((error) => {
       console.log(error)
       toast.error('Oops! Algo deu errado. ')
     })
@@ -95,12 +95,12 @@ function MovieCard({title, plot, actors, rating, poster, id}) {
             name='rating'
             starDimension="2rem"
             starSpacing="0.2rem"
-            />
-          </ItemContainer>
-          <Button variant='dark' onClick={() => id ? handleFavorite() : toast.warn('Pesquise um filme para favoritar')} >
-              Favoritar
-              <IoHeartOutline /> 
-            </Button>
+          />
+        </ItemContainer>
+        <Button variant='dark' onClick={() => id ? handleFavorite() : toast.warn('Pesquise um filme para favoritar')} >
+          Favoritar
+          <IoHeartOutline />
+        </Button>
       </MovieContent>
       <PosterContainer src={poster} alt={`${title} poster`} />
     </MovieWrapper>

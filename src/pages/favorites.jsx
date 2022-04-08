@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Button } from 'react-bootstrap';
-import { Wrapper, FormInput, InputContainer, FormContainer } from '../components/styles/formComponents'
+import { Wrapper, InputContainer, FormContainer } from '../components/styles/formComponents'
 import { toast } from 'react-toastify';
 import api from '../services/backend-api';
-import jwt from 'jwt-decode';
+import FavoriteCard from '../components/favoriteCard'
 
 export default function Login() {
   const [favorites, setFavorites] = useState();
 
   useEffect(() => {
     api.get('/favorites').then((response) => {
-      console.log(response.data)
       setFavorites(response.data)
     })
   }, [])
@@ -18,13 +17,20 @@ export default function Login() {
   return (
     <Wrapper>
       <Container>
-        <FormContainer>
-          <InputContainer>
-            {favorites?.map((favorite) =>(
-              <span>{favorite.movieId}</span>
-            ))}
-          </InputContainer>
-        </FormContainer>
+            {favorites?.length?
+            favorites?.map((favorite) =>(
+              <FavoriteCard
+                id={favorite.movieId}
+                key={favorite.movieId}
+              />
+            ))
+          :
+          <FormContainer>
+            <InputContainer className='text-center'>
+              <h3>Oops! Parece que você não tem favoritos salvos. Pesquise um filme e favorite-o!</h3>
+            </InputContainer>
+          </FormContainer>
+            }
       </Container>
     </Wrapper>
   )
